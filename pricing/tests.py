@@ -17,7 +17,9 @@ class PricingDifferenceAPITestCase(APITestCase):
     @patch("pricing.views.ExchangeRate.objects.get")
     @patch("pricing.views.PricingDifferenceAPIView.fetch_prices_from_bigtable")
     @patch("pricing.views.PricingDifferenceAPIView.process_prices")
-    def test_pricing_difference(self, mock_process_prices, mock_fetch_prices, mock_get_exchange_rate):
+    def test_pricing_difference(
+        self, mock_process_prices, mock_fetch_prices, mock_get_exchange_rate
+    ):
         # Mock data
         current_rate = 1.2
         historical_rate = 1.1
@@ -39,7 +41,11 @@ class PricingDifferenceAPITestCase(APITestCase):
         ]
 
         # Mock ExchangeRate model
-        mock_get_exchange_rate.side_effect = lambda **kwargs: ExchangeRate(rate_to_usd=current_rate) if kwargs["extract_date"] == parse_date("2023-12-01") else ExchangeRate(rate_to_usd=historical_rate)
+        mock_get_exchange_rate.side_effect = lambda **kwargs: (
+            ExchangeRate(rate_to_usd=current_rate)
+            if kwargs["extract_date"] == parse_date("2023-12-01")
+            else ExchangeRate(rate_to_usd=historical_rate)
+        )
 
         # Mock fetch_prices_from_bigtable
         mock_fetch_prices.return_value = {
@@ -54,7 +60,8 @@ class PricingDifferenceAPITestCase(APITestCase):
 
         # Make request
         response = self.client.get(
-            self.url, {"month": "2023-12", "currency": "USD", "hotels": [1], "years_ago": 1}
+            self.url,
+            {"month": "2023-12", "currency": "USD", "hotels": [1], "years_ago": 1},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -65,7 +72,8 @@ class PricingDifferenceAPITestCase(APITestCase):
         mock_get_exchange_rate.side_effect = ExchangeRate.DoesNotExist
 
         response = self.client.get(
-            self.url, {"month": "2023-12", "currency": "USD", "hotels": [1], "years_ago": 1}
+            self.url,
+            {"month": "2023-12", "currency": "USD", "hotels": [1], "years_ago": 1},
         )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -75,7 +83,8 @@ class PricingDifferenceAPITestCase(APITestCase):
         mock_get_exchange_rate.side_effect = ExchangeRate.DoesNotExist
 
         response = self.client.get(
-            self.url, {"month": "2023-12", "currency": "EUR", "hotels": [1], "years_ago": 1}
+            self.url,
+            {"month": "2023-12", "currency": "EUR", "hotels": [1], "years_ago": 1},
         )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
