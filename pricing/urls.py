@@ -1,11 +1,13 @@
+# urls.py
+
 from django.urls import path
 
-from pricing.views import PricingDifferenceView
+from pricing.views import PricingDifferenceAPIView
 
 urlpatterns = [
     path(
         "pricing/pre_corona_difference/",
-        PricingDifferenceView.as_view(),
-        name="pre_corona_difference",
-    )
+        PricingDifferenceAPIView.as_view(),
+        name="pricing-difference",
+    ),
 ]

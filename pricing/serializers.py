@@ -1,11 +1,11 @@
+# serializers.py
+
 from rest_framework import serializers
 
-from .models import Price
 
-
-class PriceSerializer(serializers.Serializer):
+class PriceDifferenceSerializer(serializers.Serializer):
     hotel = serializers.IntegerField()
-    price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    price = serializers.FloatField()
     currency = serializers.CharField(max_length=3)
-    difference = serializers.DecimalField(max_digits=10, decimal_places=2)
+    difference = serializers.FloatField()
     arrival_date = serializers.DateField()

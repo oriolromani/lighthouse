@@ -1,13 +1,15 @@
+# models.py
+
 from django.db import models
 
 
-class Hotel(models.Model):
-    name = models.CharField(max_length=255)
-
-
-class Price(models.Model):
-    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
-    date = models.DateField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+class ExchangeRate(models.Model):
     currency = models.CharField(max_length=3)
-    cancellable = models.BooleanField(default=True)
+    extract_date = models.DateField()
+    rate_to_usd = models.FloatField()
+
+    class Meta:
+        unique_together = ("currency", "extract_date")
+        indexes = [
+            models.Index(fields=["currency", "extract_date"]),
+        ]
